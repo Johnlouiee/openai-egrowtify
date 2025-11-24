@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Analysis Algorithm - eGrowtify</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+        }
+
+        .header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .algorithm-flow {
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .algorithm-flow pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background: #f9f9f9;
+            border-left: 3px solid #333;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .step-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 3px solid #333;
+            margin: 15px 0;
+        }
+
+        .step-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .plant-category {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .plant-category h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .plant-category ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .plant-category li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .plant-category li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Soil Analysis Algorithm</h1>
+            <a href="index.html">← Back to Home</a>
+        </div>
+        
+        <div>
+            <div class="section">
+                <h2>Overview</h2>
+                <p>The soil analysis algorithm uses <strong>OpenAI Vision API (GPT-4o)</strong> to analyze soil images and provide comprehensive soil assessment with plant recommendations, specifically optimized for <strong>tropical climates and the Philippines</strong>.</p>
+                <div class="highlight-box">
+                    <p><strong>Key Capabilities:</strong></p>
+                    <ul>
+                        <li>Visual soil health assessment</li>
+                        <li>Texture and composition analysis</li>
+                        <li>pH and nutrient level estimation</li>
+                        <li>Moisture and drainage evaluation</li>
+                        <li>Personalized plant recommendations</li>
+                        <li>Soil improvement suggestions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Algorithm Flow</h2>
+                <div class="algorithm-flow">
+                    <pre>
+┌─────────────────┐
+│  User Uploads   │
+│  Soil Image     │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 1: Image Preprocessing│
+│ - Read image bytes       │
+│ - Base64 encode         │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 2: OpenAI Vision   │
+│ Analysis                │
+│ - Send image to GPT-4o  │
+│ - Get detailed analysis │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 3: Result Processing│
+│ - Parse JSON response   │
+│ - Structure data        │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 4: Return Results   │
+│ - Format for frontend   │
+└─────────────────────────┘
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Detailed Steps</h2>
+                
+                <div class="step-box">
+                    <h4>Step 1: Image Preprocessing</h4>
+                    <p>The uploaded soil image is read and encoded to Base64 format for API transmission:</p>
+                    <div class="code-block">
+                        <code># Read image file
+image_bytes = file.read()
+
+# Base64 encode for API transmission
+image_b64 = base64.b64encode(image_bytes).decode('utf-8')</code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 2: OpenAI Vision Analysis</h4>
+                    <p>The encoded image is sent to GPT-4o vision model with a specialized system prompt designed for soil analysis. The AI analyzes:</p>
+                    <ul>
+                        <li><strong>Visual Indicators:</strong> Color, texture, structure, moisture appearance</li>
+                        <li><strong>Soil Health:</strong> Organic matter content, compaction, drainage quality</li>
+                        <li><strong>Chemical Properties:</strong> Estimated pH range based on visual cues</li>
+                        <li><strong>Physical Properties:</strong> Texture type, water retention, root development potential</li>
+                    </ul>
+                    <p><strong>Model:</strong> GPT-4o (vision-capable)</p>
+                    <p><strong>Response Format:</strong> Structured JSON with comprehensive soil data</p>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 3: Result Processing</h4>
+                    <p>The JSON response is parsed and structured into a comprehensive soil assessment including:</p>
+                    <ul>
+                        <li>Moisture level assessment</li>
+                        <li>Soil texture classification</li>
+                        <li>pH estimation</li>
+                        <li>Organic matter content</li>
+                        <li>Drainage quality</li>
+                        <li>Nutrient indicators</li>
+                        <li>Compaction assessment</li>
+                        <li>Soil health score (1-10)</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 4: Return Results</h4>
+                    <p>The processed data is formatted and returned to the frontend with all analysis results and recommendations.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Output Structure</h2>
+                <div class="highlight-box">
+                    <p>The comprehensive soil analysis includes:</p>
+                    <ul>
+                        <li><strong>Moisture Level:</strong> Detailed assessment with visual indicators</li>
+                        <li><strong>Texture:</strong> Specific soil type with characteristics (sandy, loamy, clay, etc.)</li>
+                        <li><strong>pH:</strong> Estimated pH range with visual indicators</li>
+                        <li><strong>Organic Matter:</strong> Assessment of organic content</li>
+                        <li><strong>Drainage:</strong> Drainage quality assessment</li>
+                        <li><strong>Recommendations:</strong> Specific improvement suggestions</li>
+                        <li><strong>Suitable Plants:</strong> Detailed recommendations by category</li>
+                        <li><strong>Nutrient Indicators:</strong> Visual signs of nutrient status</li>
+                        <li><strong>Compaction Assessment:</strong> Soil structure analysis</li>
+                        <li><strong>Soil Health Score:</strong> 1-10 rating with explanation</li>
+                        <li><strong>Seasonal Considerations:</strong> Best planting times</li>
+                        <li><strong>Soil Amendments:</strong> Specific materials to add for improvement</li>
+                        <li><strong>Water Retention:</strong> How well soil holds water</li>
+                        <li><strong>Root Development:</strong> How well roots can grow in this soil</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Philippine Plant Recommendations</h2>
+                <p>The algorithm is specifically optimized to recommend common Philippine plants suitable for the analyzed soil conditions:</p>
+                
+                <div class="plant-category">
+                    <h4>🥬 Vegetables</h4>
+                    <ul>
+                        <li>Kangkong (water spinach), Talong (eggplant), Kamatis (tomato)</li>
+                        <li>Sitaw (string beans), Okra, Ampalaya (bitter melon)</li>
+                        <li>Kalabasa (squash), Pechay (Chinese cabbage), Mustasa (mustard greens)</li>
+                        <li>Upo (bottle gourd), Patola (sponge gourd), Sili (chili)</li>
+                        <li>Sibuyas (onion), Bawang (garlic), Mais (corn)</li>
+                        <li>Labanos (radish), Pipino (cucumber)</li>
+                    </ul>
+                </div>
+
+                <div class="plant-category">
+                    <h4>🍎 Fruits</h4>
+                    <ul>
+                        <li>Mango, Saging (banana), Papaya, Pinya (pineapple)</li>
+                        <li>Bayabas (guava), Niyog (coconut), Calamansi</li>
+                        <li>Atis (sugar apple), Lansones, Rambutan</li>
+                        <li>Durian, Langka (jackfruit), Pakwan (watermelon)</li>
+                    </ul>
+                </div>
+
+                <div class="plant-category">
+                    <h4>🌿 Herbs</h4>
+                    <ul>
+                        <li>Pandan, Tanglad (lemongrass), Luya (ginger)</li>
+                        <li>Luyang Dilaw (turmeric), Balanoy (basil)</li>
+                        <li>Oregano, Wansoy (cilantro)</li>
+                    </ul>
+                </div>
+
+                <div class="plant-category">
+                    <h4>🌸 Flowers</h4>
+                    <ul>
+                        <li>Sampaguita (national flower), Gumamela (hibiscus), Santan</li>
+                        <li>Bougainvillea, Kalachuchi (plumeria), Rosal (rose)</li>
+                        <li>Yellow Bell, Adelfa (oleander), Marigold</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Fallback Mechanism</h2>
+                <p>If the OpenAI API fails, the system uses basic color analysis:</p>
+                <ul>
+                    <li>RGB color analysis for soil type estimation</li>
+                    <li>Soil type estimation based on color ranges</li>
+                    <li>Basic pH estimation from color</li>
+                    <li>Moisture estimation based on brightness</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>✅ AI-powered visual soil analysis</li>
+                    <li>✅ Comprehensive soil health assessment</li>
+                    <li>✅ Philippine plant-specific recommendations</li>
+                    <li>✅ Tropical climate optimization</li>
+                    <li>✅ Detailed improvement suggestions</li>
+                    <li>✅ Seasonal planting guidance</li>
+                    <li>✅ Fallback mechanisms for reliability</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

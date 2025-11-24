@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Identification Algorithm - eGrowtify</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+        }
+
+        .header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .algorithm-flow {
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .algorithm-flow pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background: #f9f9f9;
+            border-left: 3px solid #333;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .step-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 3px solid #333;
+            margin: 15px 0;
+        }
+
+        .step-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 Plant Identification Algorithm</h1>
+            <a href="index.html">← Back to Home</a>
+        </div>
+        
+        <div>
+            <div class="section">
+                <h2>Overview</h2>
+                <p>The plant identification algorithm uses a <strong>hybrid approach</strong> combining multiple technologies to provide accurate, comprehensive plant identification and care recommendations:</p>
+                <ul>
+                    <li><strong>Plant.id API</strong> - For initial plant identification</li>
+                    <li><strong>OpenAI Vision API (GPT-4o)</strong> - For enhanced analysis and care recommendations</li>
+                    <li><strong>Rule-based fallbacks</strong> - For offline functionality and common plant types</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Algorithm Flow</h2>
+                <div class="algorithm-flow">
+                    <pre>
+┌─────────────────┐
+│  User Uploads   │
+│  Plant Image    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 1: Image Preprocessing│
+│ - Read image bytes       │
+│ - Base64 encode         │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 2: Plant.id API Call│
+│ - Send base64 image      │
+│ - Request identification │
+│ - Get suggestions        │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 3: Result Processing│
+│ - Extract plant names   │
+│ - Map to common names   │
+│ - Calculate confidence  │
+│ - Rank suggestions      │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 4: Rule-Based       │
+│ Enrichment (Optional)   │
+│ - Apply plant-specific   │
+│   care rules            │
+│ - Infer from wiki text  │
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 5: OpenAI Vision     │
+│ Enhancement (Optional)   │
+│ - Analyze image with AI  │
+│ - Get health status      │
+│ - Get care recommendations│
+└────────┬────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│ Step 6: Merge Results    │
+│ - Combine all data      │
+│ - Prioritize AI results │
+│ - Return final response │
+└─────────────────────────┘
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Detailed Steps</h2>
+                
+                <div class="step-box">
+                    <h4>Step 1: Image Preprocessing</h4>
+                    <p>The uploaded image is read and encoded to Base64 format for API transmission:</p>
+                    <div class="code-block">
+                        <code># Read image file
+image_bytes = file.read()
+
+# Base64 encode for API transmission
+image_b64 = base64.b64encode(image_bytes).decode('utf-8')</code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 2: Plant.id API Call</h4>
+                    <p>The encoded image is sent to Plant.id API for initial identification. The API returns plant suggestions with confidence scores, scientific names, common names, and wiki descriptions.</p>
+                    <p><strong>Endpoint:</strong> <code>https://api.plant.id/v2/identify</code></p>
+                    <p><strong>Response includes:</strong> Plant name, probability score, common names, wiki description, and plant details.</p>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 3: Result Processing</h4>
+                    <ul>
+                        <li><strong>Name Extraction:</strong> Extract plant name, scientific name, and common names</li>
+                        <li><strong>Mapping:</strong> Convert scientific names to common names with special handling for Philippine plants</li>
+                        <li><strong>Confidence Calculation:</strong> Convert probability to percentage (0-100%)</li>
+                        <li><strong>Ranking:</strong> Sort suggestions by probability, apply crop matching boost, select top suggestion</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 4: Rule-Based Enrichment</h4>
+                    <p>For common plants, predefined care rules are applied. This includes:</p>
+                    <ul>
+                        <li>Growth stage information</li>
+                        <li>Care recommendations (watering, sunlight, soil)</li>
+                        <li>Common issues and solutions</li>
+                        <li>Estimated yield information</li>
+                    </ul>
+                    <p><strong>Supported Categories:</strong> Vegetables, Fruits, Herbs, Flowers, Succulents</p>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 5: OpenAI Vision Enhancement</h4>
+                    <p>The image is analyzed using GPT-4o vision model to provide:</p>
+                    <ul>
+                        <li>Detailed health status assessment</li>
+                        <li>Specific growth stage identification</li>
+                        <li>Image-specific care recommendations</li>
+                        <li>Common issues and pest/disease information</li>
+                        <li>Seasonal care tips</li>
+                    </ul>
+                    <p>Results are cached to reduce API calls and improve performance.</p>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 6: Merge Results</h4>
+                    <p>All data sources are combined with priority order:</p>
+                    <ol>
+                        <li>OpenAI Vision results (if available)</li>
+                        <li>Rule-based enrichment</li>
+                        <li>Wiki text inference</li>
+                        <li>Default fallbacks</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Output Structure</h2>
+                <div class="highlight-box">
+                    <p>The final response includes:</p>
+                    <ul>
+                        <li><strong>Plant Information:</strong> Name, scientific name, common names, confidence score</li>
+                        <li><strong>Health Status:</strong> Detailed assessment based on image analysis</li>
+                        <li><strong>Growth Stage:</strong> Current stage of plant development</li>
+                        <li><strong>Care Recommendations:</strong> Watering, sunlight, soil, fertilizing, pruning guidelines</li>
+                        <li><strong>Common Issues:</strong> Potential problems and solutions</li>
+                        <li><strong>Estimated Yield:</strong> Expected harvest information</li>
+                        <li><strong>Seasonal Notes:</strong> Best planting and care times</li>
+                        <li><strong>Pest & Diseases:</strong> Common threats and prevention methods</li>
+                        <li><strong>Alternatives:</strong> Other possible plant matches</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Fallback Mechanism</h2>
+                <p>If the Plant.id API fails, the system uses basic image analysis:</p>
+                <ul>
+                    <li>Color analysis (RGB ratios)</li>
+                    <li>Green ratio detection for plant health</li>
+                    <li>Basic classification (Leafy Plant vs Fruit/Flower)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>✅ Multi-API integration for accuracy</li>
+                    <li>✅ Intelligent fallback mechanisms</li>
+                    <li>✅ Caching for performance and cost optimization</li>
+                    <li>✅ Philippine plant focus</li>
+                    <li>✅ Comprehensive care recommendations</li>
+                    <li>✅ Image-based analysis using vision AI</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
