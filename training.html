@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training New Plants - eGrowtify</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+        }
+
+        .header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background: #f9f9f9;
+            border-left: 3px solid #333;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .step-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 3px solid #333;
+            margin: 15px 0;
+        }
+
+        .step-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .process-flow {
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .process-flow ol {
+            margin-left: 20px;
+        }
+
+        .data-requirements {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .data-requirements h4 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Training New Plants</h1>
+            <a href="index.html">← Back to Home</a>
+        </div>
+        
+        <div>
+            <div class="section">
+                <h2>Overview</h2>
+                <p>When a new plant is discovered or not recognized by the system, we need to train the system to adopt it. This process involves collecting data, creating plant profiles, and integrating the new plant into our identification and care recommendation system.</p>
+            </div>
+
+            <div class="section">
+                <h2>Detection of New Plants</h2>
+                <p>The system identifies a new plant when:</p>
+                <ul>
+                    <li>Plant.id API returns low confidence scores (&lt; 50%) for all suggestions</li>
+                    <li>No matches found in the rule-based plant database</li>
+                    <li>User reports incorrect identification</li>
+                    <li>Plant characteristics don't match any existing plant profiles</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Training Process</h2>
+                
+                <div class="process-flow">
+                    <h3>Step-by-Step Training Workflow</h3>
+                    <ol>
+                        <li><strong>Data Collection</strong> - Gather comprehensive plant information</li>
+                        <li><strong>Image Collection</strong> - Collect multiple images from different angles and growth stages</li>
+                        <li><strong>Plant Profile Creation</strong> - Create structured plant data entry</li>
+                        <li><strong>Rule-Based Entry</strong> - Add care rules and characteristics</li>
+                        <li><strong>API Integration</strong> - Update Plant.id custom model (if applicable)</li>
+                        <li><strong>Testing & Validation</strong> - Verify identification accuracy</li>
+                        <li><strong>Deployment</strong> - Add to production database</li>
+                    </ol>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 1: Data Collection</h4>
+                    <p>Collect comprehensive information about the new plant:</p>
+                    <div class="data-requirements">
+                        <h4>Required Information:</h4>
+                        <ul>
+                            <li><strong>Scientific Name:</strong> Binomial nomenclature (e.g., "Solanum melongena")</li>
+                            <li><strong>Common Names:</strong> All known common names in different languages</li>
+                            <li><strong>Plant Type:</strong> Vegetable, Fruit, Herb, Flower, Tree, etc.</li>
+                            <li><strong>Growth Characteristics:</strong> Height, spread, growth rate</li>
+                            <li><strong>Physical Description:</strong> Leaf shape, flower color, fruit characteristics</li>
+                            <li><strong>Native Region:</strong> Geographic origin</li>
+                            <li><strong>Climate Requirements:</strong> Temperature, humidity preferences</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 2: Image Collection</h4>
+                    <p>Gather multiple high-quality images for training:</p>
+                    <ul>
+                        <li><strong>Minimum 10-20 images</strong> per plant</li>
+                        <li>Images from different angles (top, side, close-up)</li>
+                        <li>Different growth stages (seedling, mature, flowering, fruiting)</li>
+                        <li>Various lighting conditions</li>
+                        <li>Different seasons (if applicable)</li>
+                        <li>Include both healthy and typical variations</li>
+                    </ul>
+                    <p><strong>Image Requirements:</strong></p>
+                    <ul>
+                        <li>Resolution: Minimum 800x600 pixels</li>
+                        <li>Format: JPEG or PNG</li>
+                        <li>Clear focus on plant features</li>
+                        <li>Good lighting and contrast</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 3: Plant Profile Creation</h4>
+                    <p>Create a structured JSON profile for the new plant:</p>
+                    <div class="code-block">
+{
+  "scientific_name": "New Plant Scientific Name",
+  "common_names": ["Common Name 1", "Common Name 2"],
+  "plant_type": "vegetable|fruit|herb|flower|tree",
+  "growth_stage": "Description of growth stages",
+  "care_recommendations": {
+    "watering": "Watering requirements and frequency",
+    "sunlight": "Sunlight needs (full sun, partial shade, etc.)",
+    "soil": "Soil type and pH preferences",
+    "fertilizing": "Fertilization schedule and type",
+    "pruning": "Pruning requirements"
+  },
+  "common_issues": ["Issue 1", "Issue 2"],
+  "estimated_yield": "Expected yield information",
+  "seasonal_notes": "Best planting and care times",
+  "pest_diseases": {
+    "common_threats": ["Pest 1", "Disease 1"],
+    "prevention": "Prevention methods"
+  },
+  "philippine_names": ["Local name 1", "Local name 2"],
+  "tropical_adaptation": true|false
+}
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 4: Rule-Based Entry</h4>
+                    <p>Add the plant to the rule-based database for offline functionality:</p>
+                    <div class="code-block">
+# Add to plant_rules dictionary
+plant_rules = {
+    "new_plant_name": {
+        'growth_stage': 'Description',
+        'care_recommendations': {
+            'watering': 'Specific watering needs',
+            'sunlight': 'Light requirements',
+            'soil': 'Soil preferences'
+        },
+        'common_issues': ['Issue 1', 'Issue 2'],
+        'estimated_yield': 'Yield information',
+        'plant_type': 'vegetable|fruit|herb|flower'
+    }
+}
+                    </div>
+                    <p>This ensures the plant can be identified even when APIs are unavailable.</p>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 5: API Integration</h4>
+                    <p>For Plant.id API integration:</p>
+                    <ul>
+                        <li><strong>Custom Model Training:</strong> If Plant.id supports custom models, upload training images</li>
+                        <li><strong>Feedback Loop:</strong> Submit correct identifications to improve API accuracy</li>
+                        <li><strong>Name Mapping:</strong> Add scientific-to-common name mappings</li>
+                        <li><strong>Philippine Names:</strong> Add local name translations for better recognition</li>
+                    </ul>
+                    <p>For OpenAI Vision:</p>
+                    <ul>
+                        <li>Update system prompts to include new plant information</li>
+                        <li>Add plant-specific care guidelines to prompt context</li>
+                        <li>Include new plant in example responses</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 6: Testing & Validation</h4>
+                    <p>Test the new plant entry:</p>
+                    <ul>
+                        <li>Upload test images to verify identification accuracy</li>
+                        <li>Check that care recommendations are appropriate</li>
+                        <li>Validate scientific and common name mappings</li>
+                        <li>Test with different image angles and qualities</li>
+                        <li>Verify fallback mechanisms work correctly</li>
+                        <li>Test in different lighting conditions</li>
+                    </ul>
+                    <p><strong>Success Criteria:</strong></p>
+                    <ul>
+                        <li>Identification accuracy &gt; 80%</li>
+                        <li>Correct care recommendations displayed</li>
+                        <li>Proper name mapping in results</li>
+                        <li>Fallback rules work when API unavailable</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4>Step 7: Deployment</h4>
+                    <p>Deploy the new plant to production:</p>
+                    <ul>
+                        <li>Add plant profile to production database</li>
+                        <li>Update rule-based dictionary</li>
+                        <li>Update name mapping tables</li>
+                        <li>Clear relevant caches</li>
+                        <li>Monitor identification accuracy post-deployment</li>
+                        <li>Collect user feedback for improvements</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Implementation Code Example</h2>
+                <p>Example function to add a new plant to the system:</p>
+                <div class="code-block">
+def add_new_plant(plant_data, images):
+    """
+    Add a new plant to the system database
+    
+    Args:
+        plant_data: Dictionary containing plant information
+        images: List of image file paths for training
+    """
+    # 1. Validate plant data
+    required_fields = ['scientific_name', 'common_names', 'plant_type']
+    for field in required_fields:
+        if field not in plant_data:
+            raise ValueError(f"Missing required field: {field}")
+    
+    # 2. Add to rule-based database
+    plant_name = plant_data['common_names'][0].lower()
+    plant_rules[plant_name] = {
+        'growth_stage': plant_data.get('growth_stage', ''),
+        'care_recommendations': plant_data.get('care_recommendations', {}),
+        'common_issues': plant_data.get('common_issues', []),
+        'estimated_yield': plant_data.get('estimated_yield', ''),
+        'plant_type': plant_data['plant_type']
+    }
+    
+    # 3. Add name mappings
+    scientific_name = plant_data['scientific_name']
+    for common_name in plant_data['common_names']:
+        name_mapping[scientific_name.lower()] = common_name
+        name_mapping[common_name.lower()] = common_name
+    
+    # 4. Add Philippine names if provided
+    if 'philippine_names' in plant_data:
+        for ph_name in plant_data['philippine_names']:
+            philippine_plant_mapping[ph_name.lower()] = plant_data['common_names'][0]
+    
+    # 5. Save to database/file
+    save_plant_to_database(plant_data)
+    
+    # 6. Train Plant.id custom model (if applicable)
+    if plant_id_custom_model_enabled:
+        train_plant_id_model(scientific_name, images)
+    
+    # 7. Update OpenAI prompt context
+    update_openai_plant_context(plant_data)
+    
+    return {"status": "success", "plant_name": plant_name}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Data Quality Standards</h2>
+                <div class="highlight-box">
+                    <p><strong>Minimum Requirements for New Plant Entry:</strong></p>
+                    <ul>
+                        <li>At least 1 scientific name (verified)</li>
+                        <li>At least 1 common name</li>
+                        <li>Minimum 10 training images</li>
+                        <li>Basic care recommendations (watering, sunlight, soil)</li>
+                        <li>Plant type classification</li>
+                    </ul>
+                    <p><strong>Recommended for Better Accuracy:</strong></p>
+                    <ul>
+                        <li>20+ training images from various angles</li>
+                        <li>Multiple common names (including local names)</li>
+                        <li>Complete care recommendations</li>
+                        <li>Growth stage information</li>
+                        <li>Common issues and solutions</li>
+                        <li>Seasonal care notes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Continuous Improvement</h2>
+                <p>After adding a new plant, continuously improve accuracy:</p>
+                <ul>
+                    <li><strong>User Feedback:</strong> Collect user reports of incorrect identifications</li>
+                    <li><strong>Image Refinement:</strong> Add more diverse images based on user submissions</li>
+                    <li><strong>Care Updates:</strong> Refine care recommendations based on user experiences</li>
+                    <li><strong>Name Expansion:</strong> Add more common names as discovered</li>
+                    <li><strong>Regional Variations:</strong> Account for regional plant variations</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Special Considerations for Philippine Plants</h2>
+                <div class="highlight-box">
+                    <p>When adding Philippine plants, ensure:</p>
+                    <ul>
+                        <li>Include Tagalog/local names in common_names</li>
+                        <li>Add to philippine_plant_mapping dictionary</li>
+                        <li>Consider tropical climate adaptations</li>
+                        <li>Include regional growing information</li>
+                        <li>Account for seasonal variations in tropical climate</li>
+                        <li>Include traditional uses if applicable</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Maintenance & Updates</h2>
+                <p>Regular maintenance tasks:</p>
+                <ul>
+                    <li>Review and update plant profiles quarterly</li>
+                    <li>Add new images as they become available</li>
+                    <li>Update care recommendations based on new research</li>
+                    <li>Merge duplicate entries if found</li>
+                    <li>Remove or flag outdated information</li>
+                    <li>Monitor API accuracy and adjust as needed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
