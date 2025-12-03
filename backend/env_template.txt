@@ -1,0 +1,22 @@
+# Database Configuration
+# For XAMPP (no password - default): mysql+pymysql://root:@localhost:3306/plant_soil_db
+# If you set a MySQL password: mysql+pymysql://root:YOUR_PASSWORD@localhost:3306/plant_soil_db
+DATABASE_URL=mysql+pymysql://root:@localhost:3306/plant_soil_db
+
+# Flask Configuration
+SECRET_KEY=your-secret-key-change-this-in-production
+FLASK_ENV=development
+FLASK_DEBUG=1
+
+# API Keys (REQUIRED)
+# Get Plant.id API key from: https://web.plant.id/plant-identification-api/
+PLANT_ID_API_KEY=your-plant-id-api-key-here
+
+# Get OpenAI API key from: https://platform.openai.com/api-keys
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Usage Limits (Optional - defaults shown)
+FREE_ANALYSES_BASIC=5
+FREE_ANALYSES_PREMIUM=10
+PRICE_PER_ANALYSIS=20.00
+
