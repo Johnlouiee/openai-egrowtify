@@ -144,7 +144,8 @@ def ai_plant_recognition():
             return jsonify({
                 "error": "No plant suggestions found",
                 "plant_name": "Unknown",
-                "confidence": 0
+                "confidence": 0,
+                "needs_training": True
             }), 200
         
         # Get top suggestion
@@ -157,6 +158,9 @@ def ai_plant_recognition():
         scientific_name = plant_details.get('scientific_name', plant_name)
         wiki_description = plant_details.get('wiki_description', {}).get('value', '')
         
+        # Check if confidence is low (needs training)
+        needs_training = confidence < 50.0
+        
         # Prepare result
         result = {
             "plant_name": plant_name,
@@ -165,6 +169,7 @@ def ai_plant_recognition():
             "confidence": round(confidence, 2),
             "wiki_description": wiki_description,
             "info_url": plant_details.get('url', ''),
+            "needs_training": needs_training,
             "alternatives": [
                 {
                     "name": s.get('plant_name', 'Unknown'),
@@ -432,6 +437,85 @@ def soil_usage_status():
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@views.route('/api/train-plant', methods=['POST'])
+def train_new_plant():
+    """
+    Submit training data for a newly discovered plant
+    Accepts both JSON and form data
+    """
+    try:
+        user_id = get_user_id()
+        
+        # Handle both JSON and form data
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+            # Parse JSON strings if present
+            if 'common_names' in data and isinstance(data['common_names'], str):
+                try:
+                    data['common_names'] = json.loads(data['common_names'])
+                except:
+                    pass
+        
+        # Validate required fields
+        if 'plant_name' not in data or not data.get('plant_name'):
+            return jsonify({"error": "Missing required field: plant_name"}), 400
+        
+        # Get image if provided
+        image_data = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file.filename:
+                image_bytes = file.read()
+                image_data = base64.b64encode(image_bytes).decode('utf-8')
+        elif 'image_data' in data and data['image_data']:
+            # Remove data URL prefix if present
+            img_data = data['image_data']
+            if ',' in img_data:
+                image_data = img_data.split(',')[1]
+            else:
+                image_data = img_data
+        
+        # Process common_names
+        common_names_str = ''
+        if 'common_names' in data:
+            if isinstance(data['common_names'], list):
+                common_names_str = json.dumps(data['common_names'])
+            elif isinstance(data['common_names'], str):
+                # If it's a comma-separated string, convert to list then JSON
+                names_list = [n.strip() for n in data['common_names'].split(',') if n.strip()]
+                common_names_str = json.dumps(names_list)
+        
+        # Create training submission
+        submission = PlantTrainingSubmission(
+            user_id=user_id,
+            plant_name=data.get('plant_name', ''),
+            scientific_name=data.get('scientific_name', ''),
+            common_names=common_names_str,
+            plant_type=data.get('plant_type', ''),
+            description=data.get('description', ''),
+            care_instructions=data.get('care_instructions', ''),
+            image_data=image_data,
+            status='pending'
+        )
+        
+        db.session.add(submission)
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Plant training data submitted successfully. Thank you for contributing!",
+            "submission_id": submission.submission_id
+        }), 200
+        
+    except Exception as e:
+        print(f"Error in train_new_plant: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        db.session.rollback()
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 @views.route('/api/health', methods=['GET'])
 def health_check():

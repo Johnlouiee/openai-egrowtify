@@ -8,6 +8,7 @@ import os
 load_dotenv()
 
 app = create_app()
+# CORS configuration - allow all origins for development
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if __name__ == '__main__':

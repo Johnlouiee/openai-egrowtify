@@ -46,3 +46,23 @@ CREATE TABLE IF NOT EXISTS `soil_analysis_usage` (
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Table: plant_training_submissions (stores user submissions for training new plants)
+CREATE TABLE IF NOT EXISTS `plant_training_submissions` (
+  `submission_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `plant_name` varchar(200) NOT NULL,
+  `scientific_name` varchar(200) DEFAULT NULL,
+  `common_names` text DEFAULT NULL,
+  `plant_type` varchar(50) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `care_instructions` text DEFAULT NULL,
+  `image_data` text DEFAULT NULL,
+  `status` varchar(20) DEFAULT 'pending',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `reviewed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`submission_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+

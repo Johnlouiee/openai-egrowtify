@@ -68,3 +68,35 @@ class SoilAnalysisUsage(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
 
+class PlantTrainingSubmission(db.Model):
+    """Stores user submissions for training new plants"""
+    __tablename__ = 'plant_training_submissions'
+    
+    submission_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    plant_name = db.Column(db.String(200), nullable=False)
+    scientific_name = db.Column(db.String(200), nullable=True)
+    common_names = db.Column(db.Text, nullable=True)  # JSON array as string
+    plant_type = db.Column(db.String(50), nullable=True)  # vegetable, fruit, herb, etc.
+    description = db.Column(db.Text, nullable=True)
+    care_instructions = db.Column(db.Text, nullable=True)
+    image_data = db.Column(db.Text, nullable=True)  # Base64 encoded image
+    status = db.Column(db.String(20), default='pending')  # pending, reviewed, approved, rejected
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    reviewed_at = db.Column(db.DateTime, nullable=True)
+    
+    def to_dict(self):
+        return {
+            'submission_id': self.submission_id,
+            'user_id': self.user_id,
+            'plant_name': self.plant_name,
+            'scientific_name': self.scientific_name,
+            'common_names': self.common_names,
+            'plant_type': self.plant_type,
+            'description': self.description,
+            'care_instructions': self.care_instructions,
+            'status': self.status,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'reviewed_at': self.reviewed_at.isoformat() if self.reviewed_at else None
+        }
+

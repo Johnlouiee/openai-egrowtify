@@ -15,6 +15,16 @@ function AIPlantRecognition() {
     plant: { free_analyses_used: 0, remaining_total: 5 },
     soil: { free_analyses_used: 0, remaining_total: 5 }
   })
+  const [showTrainingForm, setShowTrainingForm] = useState(false)
+  const [trainingData, setTrainingData] = useState({
+    plant_name: '',
+    scientific_name: '',
+    common_names: '',
+    plant_type: '',
+    description: '',
+    care_instructions: ''
+  })
+  const [submittingTraining, setSubmittingTraining] = useState(false)
   
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
@@ -36,7 +46,10 @@ function AIPlantRecognition() {
         soil: soilStatus.data
       })
     } catch (error) {
-      console.error('Error fetching usage status:', error)
+      // Silently fail - backend might not be running yet
+      if (error.code !== 'ERR_NETWORK' && error.code !== 'ECONNREFUSED') {
+        console.error('Error fetching usage status:', error)
+      }
     }
   }
 
@@ -89,20 +102,42 @@ function AIPlantRecognition() {
       const response = await axios.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
+        }
       })
 
       setResults(response.data)
+      
+      // Show training form if confidence is low
+      if (response.data.needs_training) {
+        setShowTrainingForm(true)
+        setTrainingData({
+          plant_name: response.data.plant_name || '',
+          scientific_name: response.data.scientific_name || '',
+          common_names: Array.isArray(response.data.common_names) 
+            ? response.data.common_names.join(', ') 
+            : response.data.common_names || '',
+          plant_type: '',
+          description: '',
+          care_instructions: ''
+        })
+      }
+      
       toast.success('Analysis completed successfully!')
       fetchUsageStatus() // Refresh usage status
     } catch (error) {
       console.error('Analysis error:', error)
-      const errorMessage = error.response?.data?.error || 'An error occurred during analysis'
-      toast.error(errorMessage)
       
-      if (error.response?.status === 403) {
-        toast.error('Usage limit reached. Please purchase more credits.')
+      // Check if backend is not running
+      if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED' || error.message?.includes('Network Error')) {
+        toast.error('Backend server is not running! Please start the backend server first.')
+        console.error('Backend connection error. Make sure to run: cd backend && python app.py')
+      } else {
+        const errorMessage = error.response?.data?.error || 'An error occurred during analysis'
+        toast.error(errorMessage)
+        
+        if (error.response?.status === 403) {
+          toast.error('Usage limit reached. Please purchase more credits.')
+        }
       }
     } finally {
       setLoading(false)
@@ -113,8 +148,54 @@ function AIPlantRecognition() {
     setSelectedImage(null)
     setPreview(null)
     setResults(null)
+    setShowTrainingForm(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
     if (cameraInputRef.current) cameraInputRef.current.value = ''
+  }
+
+  const handleTrainingSubmit = async (e) => {
+    e.preventDefault()
+    setSubmittingTraining(true)
+
+    try {
+      // Extract base64 from data URL if present
+      let imageData = null
+      if (preview) {
+        if (preview.startsWith('data:')) {
+          imageData = preview.split(',')[1] // Remove data URL prefix
+        } else {
+          imageData = preview
+        }
+      }
+
+      const formData = {
+        ...trainingData,
+        common_names: trainingData.common_names.split(',').map(n => n.trim()).filter(n => n),
+        image_data: imageData
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/api/train-plant`, formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      toast.success(response.data.message || 'Training data submitted successfully!')
+      setShowTrainingForm(false)
+      setTrainingData({
+        plant_name: '',
+        scientific_name: '',
+        common_names: '',
+        plant_type: '',
+        description: '',
+        care_instructions: ''
+      })
+    } catch (error) {
+      console.error('Training submission error:', error)
+      toast.error(error.response?.data?.error || 'Failed to submit training data')
+    } finally {
+      setSubmittingTraining(false)
+    }
   }
 
   const currentUsage = activeTab === 'plant' ? usageStatus.plant : usageStatus.soil
@@ -364,6 +445,137 @@ function AIPlantRecognition() {
                             <li key={idx}>{issue}</li>
                           ))}
                         </ul>
+                      </div>
+                    )}
+
+                    {/* Training Form - Show if confidence is low */}
+                    {results.needs_training && (
+                      <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 mt-4">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="text-orange-600 text-2xl">⚠️</div>
+                          <div className="flex-1">
+                            <h5 className="font-semibold text-orange-800 mb-1">
+                              Low Confidence Detection ({results.confidence}%)
+                            </h5>
+                            <p className="text-sm text-orange-700">
+                              This plant might be newly discovered or not well-documented. Help us train the system by providing more information!
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {!showTrainingForm ? (
+                          <button
+                            onClick={() => setShowTrainingForm(true)}
+                            className="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition mt-2"
+                          >
+                            Train This Plant
+                          </button>
+                        ) : (
+                          <form onSubmit={handleTrainingSubmit} className="mt-4 space-y-3">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Plant Name *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={trainingData.plant_name}
+                                onChange={(e) => setTrainingData({...trainingData, plant_name: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="e.g., Kangkong"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Scientific Name
+                              </label>
+                              <input
+                                type="text"
+                                value={trainingData.scientific_name}
+                                onChange={(e) => setTrainingData({...trainingData, scientific_name: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="e.g., Ipomoea aquatica"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Common Names (comma-separated)
+                              </label>
+                              <input
+                                type="text"
+                                value={trainingData.common_names}
+                                onChange={(e) => setTrainingData({...trainingData, common_names: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="e.g., Water Spinach, Kangkong"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Plant Type
+                              </label>
+                              <select
+                                value={trainingData.plant_type}
+                                onChange={(e) => setTrainingData({...trainingData, plant_type: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              >
+                                <option value="">Select type...</option>
+                                <option value="vegetable">Vegetable</option>
+                                <option value="fruit">Fruit</option>
+                                <option value="herb">Herb</option>
+                                <option value="flower">Flower</option>
+                                <option value="tree">Tree</option>
+                                <option value="shrub">Shrub</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                              </label>
+                              <textarea
+                                value={trainingData.description}
+                                onChange={(e) => setTrainingData({...trainingData, description: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                rows="3"
+                                placeholder="Describe the plant's appearance, characteristics..."
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Care Instructions
+                              </label>
+                              <textarea
+                                value={trainingData.care_instructions}
+                                onChange={(e) => setTrainingData({...trainingData, care_instructions: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                rows="3"
+                                placeholder="Watering, sunlight, soil requirements..."
+                              />
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <button
+                                type="submit"
+                                disabled={submittingTraining}
+                                className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition disabled:bg-gray-400"
+                              >
+                                {submittingTraining ? 'Submitting...' : 'Submit Training Data'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setShowTrainingForm(false)}
+                                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        )}
                       </div>
                     )}
                   </>
