@@ -4,8 +4,23 @@ from website import create_app, db
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
-load_dotenv()
+# Load environment variables - specify the path explicitly
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path=env_path)
+
+# Debug: Check if OpenAI key is loaded
+openai_key = os.getenv('OPENAI_API_KEY')
+if openai_key:
+    print(f"✅ OpenAI API key loaded (length: {len(openai_key)})")
+    if openai_key.startswith('sk-'):
+        print("✅ OpenAI API key format looks correct")
+    else:
+        print("⚠️ OpenAI API key doesn't start with 'sk-' - might be invalid")
+else:
+    print("❌ OpenAI API key NOT found in environment variables")
+    print(f"   Current working directory: {os.getcwd()}")
+    print(f"   Looking for .env at: {env_path}")
+    print(f"   .env file exists: {os.path.exists(env_path)}")
 
 app = create_app()
 # CORS configuration - allow all origins for development
