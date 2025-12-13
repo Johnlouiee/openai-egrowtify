@@ -4,9 +4,25 @@ from website import create_app, db
 from dotenv import load_dotenv
 import os
 
-# Load environment variables - specify the path explicitly
-env_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path=env_path)
+# Load environment variables - search in backend and root
+base_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.dirname(base_dir)
+env_paths = [
+    os.path.join(base_dir, '.env'),
+    os.path.join(root_dir, '.env')
+]
+
+env_loaded = False
+for path in env_paths:
+    if os.path.exists(path):
+        load_dotenv(dotenv_path=path)
+        env_loaded = True
+        print(f"✅ Loaded .env from: {path}")
+        break
+
+if not env_loaded:
+    print("⚠️ No .env file found in backend or root directory")
+
 
 # Debug: Check if OpenAI key is loaded
 openai_key = os.getenv('OPENAI_API_KEY')
